@@ -2,12 +2,16 @@ import express, { Application, NextFunction, Request, Response } from 'express'
 import helmet from 'helmet'
 import userRoutes from './route/UserRoutes'
 import bodyParser from 'body-parser'
-import logger from './utils/logger'
+import logger from './utils/Logger'
+import MongoConnection from './config/Mongo'
 
 const PORT = 8000
 const app: Application = express()
+const mongoConnection = new MongoConnection()
 
 // Middleware
+
+mongoConnection.connect()
 app.use(helmet())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,7 +26,7 @@ app.use(function (req, res, next) {
 });
 
 // Routes
-app.use('/api/v1/users', userRoutes)
+app.use('/api/v1/user', userRoutes)
 
 app.listen(PORT, () => {
     logger.info(`Server is running on  https://localhost:${PORT}`)
