@@ -2,7 +2,9 @@ import { IUser, UserDto } from "../model/User";
 import Encryption from '../utils/Encryption';
 import UserRepository from '../repository/UserRepository';
 import logger from "../utils/Logger";
-import User from "../controller/UserController";
+import jwt from "jsonwebtoken"
+import {ApiResponseCode, tokenSecret} from "../config/Constant";
+const { UserResponseCode } = ApiResponseCode
 
 class UserService {
 
@@ -15,6 +17,12 @@ class UserService {
     public async registerUser(user: UserDto): Promise<any> {
 
         const { userName, userEmail, userPhone, userType, userProfileImage, userStatus, userAddresses, userPassword } = user;
+
+        const findExistingUser = await this.userRepository.findUserByEmail(userEmail)
+
+        if(findExistingUser) {
+            return UserResponseCode.alreadyExist
+        }
 
         const hashedPassword = await this.encryption.encryptPassword(userPassword);
 
@@ -35,8 +43,6 @@ class UserService {
                 return false
             }
 
-            logger.info(`User service => `, createUser)
-
             let responseData: UserDto = {
                 userId: createUser._id,
                 userName: createUser.name,
@@ -51,6 +57,53 @@ class UserService {
                 updatedAt: createUser.updatedAt
             }
             return responseData
+    }
+
+    public async login(userEmail: string, userPassword: string) {
+
+        const findExistingUser = await this.userRepository.findUserByEmail(userEmail)
+
+        if(!findExistingUser || !findExistingUser._id) {
+            return UserResponseCode.notFound
+        }
+
+        let token = jwt.sign({
+            userId: findExistingUser._id, userEmail: findExistingUser.email
+        }, tokenSecret);
+
+        let tokenArr = token.split(".")
+        let resultArr = tokenArr[2]
+
+        let updateTokenInUser = await this.userRepository.updateUser( findExistingUser._id ,{token: resultArr})
+
+        return true
+    }
+
+    public async getAllUsers(): Promise<UserDto[] | [] | false> {
+
+        let getUsers = await this.userRepository.getAllUsers()
+
+        if (!getUsers) {
+            return UserResponseCode.notFound
+        }
+
+        let userResponse = getUsers.map(user => {
+            return {
+                userId: user._id,
+                userName: user.name,
+                userEmail: user.email,
+                userPhone: user.phone,
+                userPassword: user.password,
+                userType: user.type,
+                userProfileImage: user.profile_image,
+                userStatus: user.status,
+                userAddresses: user.addresses,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt
+              }
+        })
+
+        return userResponse
     }
 }
 

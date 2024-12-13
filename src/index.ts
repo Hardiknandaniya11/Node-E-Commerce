@@ -29,7 +29,7 @@ app.use(function (req, res, next) {
 app.use('/api/v1/user', userRoutes)
 
 app.listen(PORT, () => {
-    logger.info(`Server is running on  https://localhost:${PORT}`)
+    logger.info(`Server is running on  http://localhost:${PORT}`)
 })
 
 

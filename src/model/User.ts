@@ -1,3 +1,4 @@
+import { string } from 'joi';
 import { ObjectId, Schema, model } from 'mongoose';
 
 interface IAddress {
@@ -16,6 +17,7 @@ interface IUser {
   type: Number;
   profile_image: string;
   status: Number;
+  token?: string;
   addresses: IAddress[];
   createdAt?: Date,
   updatedAt?: Date
@@ -50,6 +52,7 @@ const userSchema = new Schema<IUser>({
   type: { type: Number, required: true },
   profile_image: { type: String },
   status: { type: Number, default: 1 },
+  token: {type: String, default: ""},
   addresses: [addressSchema]
 }, { timestamps: true });
 
