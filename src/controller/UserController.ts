@@ -7,8 +7,10 @@ const { CommonResponseCode, UserResponseCode } = ApiResponseCode
 
 class User {
   private userService: UserService;
+  private userRepository: UserRepository;
   constructor() {
-    this.userService = new UserService(new UserRepository());
+    this.userService = new UserService();
+    this.userRepository = new UserRepository();
   }
 
   register = async (req: Request, res: Response) => {
@@ -35,7 +37,7 @@ class User {
             res.status(200).json({status: false, message: "Failed to login user" });
         }
         
-        res.status(200).json({status: true, statusCode: CommonResponseCode.success, message: "Login Successfull" })
+        res.status(200).json({status: true, statusCode: CommonResponseCode.success, data: loginUser })
     } catch (error: any) {
         logger.error(`*** UserController login *** catch ERROR => ${error.stack}`)
         res.status(500).json(CommonResponseCode.serverError)
@@ -47,6 +49,7 @@ class User {
 
         let getAllUsers = await this.userService.getAllUsers() 
 
+        console.log("*** inside the getAll controller")
         if(!getAllUsers || (Array.isArray(getAllUsers) && getAllUsers.length == 0)) {
             res.status(200).json(UserResponseCode.notFound)
         }

@@ -67,6 +67,8 @@ class UserRepository {
 
     async findUserById(userId: string): Promise<IUser | null | false> {
 
+        console.log("reposity inside findUserById")
+
        let getUser: IUser | null | false = await User.findById(userId).then((result: IUser | null) => {
             return result
         }).catch((error: any) => {

@@ -4,16 +4,13 @@ import UserRepository from '../repository/UserRepository';
 import logger from "../utils/Logger";
 import jwt from "jsonwebtoken"
 import {ApiResponseCode, tokenSecret} from "../config/Constant";
-const { UserResponseCode } = ApiResponseCode
+const { CommonResponseCode, UserResponseCode } = ApiResponseCode
 
 class UserService {
 
     protected encryption: Encryption = new Encryption()
-    protected userRepository: UserRepository
+    protected userRepository: UserRepository = new UserRepository()
 
-    constructor(repository: UserRepository) {
-        this.userRepository = repository
-    }
     public async registerUser(user: UserDto): Promise<any> {
 
         const { userName, userEmail, userPhone, userType, userProfileImage, userStatus, userAddresses, userPassword } = user;
@@ -67,6 +64,12 @@ class UserService {
             return UserResponseCode.notFound
         }
 
+        const comparePassword = await this.encryption.comparePassword(userPassword, findExistingUser.password);
+
+        if(!comparePassword) {
+            return CommonResponseCode.notAuthorized
+        }
+
         let token = jwt.sign({
             userId: findExistingUser._id, userEmail: findExistingUser.email
         }, tokenSecret);
@@ -76,7 +79,7 @@ class UserService {
 
         let updateTokenInUser = await this.userRepository.updateUser( findExistingUser._id ,{token: resultArr})
 
-        return true
+        return {token: token}
     }
 
     public async getAllUsers(): Promise<UserDto[] | [] | false> {
@@ -88,6 +91,7 @@ class UserService {
         }
 
         let userResponse = getUsers.map(user => {
+            console.log(user)
             return {
                 userId: user._id,
                 userName: user.name,

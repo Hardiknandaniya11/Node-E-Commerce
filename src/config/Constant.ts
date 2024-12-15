@@ -1,3 +1,4 @@
+import { forbidden } from "joi"
 
 // Mongo Constants
     const mongoUserName: string = 'hardik'
@@ -10,6 +11,16 @@ export const tokenSecret: string = "09f26e402586e2faa8da4c98a35f1b20d6b033c6097b
 export const ApiResponseCode: any = {
     CommonResponseCode: {
         success: 200,
+        notAuthorized: {
+            status: false,
+            statusCode: 401,
+            message: "Necessary authentication parameters are not provided or invalid credentials"
+        },
+        forbidden: {
+            status: false,
+            statusCode: 403,
+            message: "Authentication failed"
+        },
         notFound: {
             status: false,
             statusCode: 404,
