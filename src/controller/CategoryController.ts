@@ -59,7 +59,7 @@ class Categories {
     getAll = async (req: Request, res: Response) => {
         try {
 
-            let getAllCategories = await this.categoryService.getAllCategory()
+            let getAllCategories = await this.categoryService.getAllCategory(req.body.search)
 
             console.log("*** inside the getAll controller")
             if (!getAllCategories || (Array.isArray(getAllCategories) && getAllCategories.length == 0)) {
@@ -72,7 +72,7 @@ class Categories {
         }
     }
 
-    getsingle = async (req: Request, res: Response) => {
+    getSingle = async (req: Request, res: Response) => {
         try {
 
             console.log("inside get single => " + req.body.userId)
@@ -85,7 +85,7 @@ class Categories {
             res.status(200).json({ status: true, statusCode: CommonResponseCode.success, data: getCategory })
 
         } catch (error: any) {
-            logger.error("*** CategoriesController getsingle *** catch ERROR => " + error.stack)
+            logger.error("*** CategoriesController getSingle *** catch ERROR => " + error.stack)
         }
     }
 }

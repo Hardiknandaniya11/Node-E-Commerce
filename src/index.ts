@@ -1,6 +1,7 @@
 import express, { Application, NextFunction, Request, Response } from 'express'
 import helmet from 'helmet'
 import userRoutes from './route/UserRoutes'
+import categoryRoutes from './route/CategoryRoutes'
 import bodyParser from 'body-parser'
 import logger from './utils/Logger'
 import MongoConnection from './config/Mongo'
@@ -27,6 +28,7 @@ app.use(function (req, res, next) {
 
 // Routes
 app.use('/api/v1/user', userRoutes)
+app.use('/api/v1/category', categoryRoutes)
 
 app.listen(PORT, () => {
     logger.info(`Server is running on  http://localhost:${PORT}`)
