@@ -85,3 +85,42 @@ export const getSingleCategory = Joi.object({
     userId: mongoObjectId.required(),
     categoryId: mongoObjectId.required(),
 }).unknown().strict()
+
+// ProductController validation schema
+
+export const createProduct = Joi.object({
+    userId: mongoObjectId.required(),
+    categoryId: mongoObjectId.required(),
+    productName: Joi.string().required(),
+    productDescription: Joi.string().required(),
+    productPrice: Joi.number().required(),
+    productThumbnail: Joi.string().required(),
+    productTotalQuantity: Joi.number().required(),
+    productTags: hashtag.required()
+}).unknown().strict()
+
+export const updateProduct = Joi.object({
+    userId: mongoObjectId.required(),
+    productId: mongoObjectId.required(),
+    productName: Joi.string().optional(),
+    productDescription: Joi.string().optional(),
+    productPrice: Joi.number().optional(),
+    productThumbnail: Joi.string().optional(),
+    productTotalQuantity: Joi.number().optional(),
+    productTags: hashtag.optional()
+}).unknown().strict()
+
+export const deleteProduct = Joi.object({
+    userId: Joi.string().required(),
+    productId: Joi.string().required(),
+}).unknown().strict()
+
+export const getAllProduct = Joi.object({
+    userId: mongoObjectId.required(),
+    search: Joi.string().required().allow(""),
+}).unknown().strict()
+
+export const getSingleProduct = Joi.object({
+    userId: mongoObjectId.required(),
+    productId: mongoObjectId.required(),
+}).unknown().strict()

@@ -1,4 +1,3 @@
-import { forbidden } from "joi";
 
 // Mongo Constants
 const mongoUserName: string = "hardik";
@@ -87,6 +86,28 @@ export const ApiResponseCode: any = {
       status: false,
       statusCode: 1104,
       message: "failed to update Category"
+    }
+  },
+  ProductResponseCode: {
+    notFound: {
+      status: false,
+      statusCode: 1201,
+      message: "Product not found",
+    },
+    alreadyExist: {
+      status: false,
+      statusCode: 1202,
+      message: "Product already Exist",
+    },
+    failedToDelete: {
+      status: false, 
+      statusCode: 1203,
+      message: "failed to delete Product"
+    },
+    failedToUpdate: {
+      status: false,
+      statusCode: 1204,
+      message: "failed to update Product"
     }
   }
 };
