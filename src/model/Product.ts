@@ -23,7 +23,7 @@ interface ProductDto {
   productPrice: number,
   productThumbnail: string,
   productTotalQuantity: number,
-  productTags: Array<string>
+  productTags: Array<string>,
   createdAt?: Date,
   updatedAt?: Date
 }

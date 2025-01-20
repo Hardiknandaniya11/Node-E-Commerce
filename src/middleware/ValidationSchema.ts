@@ -16,7 +16,7 @@ export const userRegistration = Joi.object({
     userPassword: password.required(),
     userType: Joi.number().valid(USER_TYPE.admin, USER_TYPE.vendor, USER_TYPE.customer).required(),
     userProfileImage: Joi.string().required(),
-    userStatus: Joi.number().valid(USER_STATUS.active, USER_STATUS.inactive).required(),
+    userStatus: Joi.number().valid(USER_STATUS.verifies, USER_STATUS.notVerified).required(),
     userAddresses: Joi.array().items(Joi.object({
         address: Joi.string().required(),
         lat_long: latLong,
@@ -123,4 +123,37 @@ export const getAllProduct = Joi.object({
 export const getSingleProduct = Joi.object({
     userId: mongoObjectId.required(),
     productId: mongoObjectId.required(),
+}).unknown().strict()
+
+export const createImages = Joi.object({
+    userId: mongoObjectId.required(),
+    productId: mongoObjectId.required(),
+    productImageUrls: Joi.array().items(Joi.string()).required()
+}).unknown().strict()
+
+export const getProductImages = Joi.object({
+    userId: mongoObjectId.required(),
+    productId: mongoObjectId.required(),
+}).unknown().strict()
+
+export const deleteProductImages = Joi.object({
+    userId: mongoObjectId.required(),
+    productImageIds: Joi.array().items(mongoObjectId.required()).required()
+}).unknown().strict()
+
+
+// CartController validation schema
+
+export const updateCart = Joi.object({
+    userId: mongoObjectId.required(),
+    products: Joi.array().items(Joi.object({
+        product_id: mongoObjectId.required(),
+        product_name: Joi.string().required(),
+        product_price: Joi.number().required(),
+        quantity: Joi.number().required()
+    })).required()
+}).unknown().strict()
+
+export const getSingleCart = Joi.object({
+    userId: mongoObjectId.required()
 }).unknown().strict()

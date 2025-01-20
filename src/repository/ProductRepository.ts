@@ -1,4 +1,5 @@
 import { Product, IProduct, ProductDto } from '../model/Product';
+import { ProductImage, IProductImage, ProductImageDto } from '../model/ProductImages';
 import logger from '../utils/Logger';
 
 class ProductRepository {
@@ -105,7 +106,9 @@ class ProductRepository {
     async findProductByName(productName: string): Promise<IProduct | null | false> {
         try {
 
-            let getProduct: IProduct | null | false = await Product.findById(productName).then((result: IProduct | null) => {
+            let getProduct: IProduct | null | false = await Product.findOne({
+                name: productName
+            }).then((result: IProduct | null) => {
                 return result
             }).catch((error: any) => {
                 logger.error(`*** ProductRepository findProductName *** ERROR => ${error}`)
@@ -118,6 +121,82 @@ class ProductRepository {
             logger.error(`*** ProductRepository findProductName *** catch ERROR => ${error}`)
             return false
 
+        }
+    }
+
+    async createProductImage(productImageData: IProductImage[]): Promise<IProductImage[] | false> {
+        try {
+
+            let createProductImage: IProductImage[] | false = await ProductImage.insertMany(productImageData).then((result: IProductImage[]) => {
+                return result
+            }).catch((error: any) => {
+                logger.error(`*** ProductRepository createProductImage *** ERROR => ${error}`)
+                return false
+            })
+
+            return createProductImage
+
+        } catch (error: any) {
+            logger.error(`*** ProductRepository createProductImage *** catch ERROR => ${error}`)
+            return false
+        }
+    }
+
+    async deleteProductImage(productImageId: string[]): Promise<boolean> {
+        try {
+
+            let deleteProductImage = await ProductImage.deleteMany({
+                _id: { $in: productImageId }
+            }).then((result: any) => {
+                return true
+            }).catch((error: any) => {
+                logger.error(`*** ProductRepository deleteProductImage *** ERROR => ${error}`)
+                return false
+            });
+
+            return deleteProductImage
+
+        } catch (error: any) {
+            logger.error(`*** ProductRepository deleteProductImage *** catch ERROR => ${error}`)
+            return false
+        }
+    }
+
+    async findProductImageById(productImageId: string): Promise<IProductImage | null | false> {
+        try {
+
+            let getProductImage: IProductImage | null | false = await ProductImage.findById(productImageId).then((result: IProductImage | null) => {
+                return result
+            }).catch((error: any) => {
+                logger.error(`*** ProductRepository findProductImageById *** ERROR => ${error}`)
+                return false
+            })
+
+            return getProductImage
+
+        } catch (error: any) {
+            logger.error(`*** ProductRepository findProductImageById *** catch ERROR => ${error}`)
+            return false
+        }
+    }
+
+    async findImageByProductId(productId: string): Promise<IProductImage[] | null | false> {
+        try {
+
+            let getProductImage: IProductImage[] | null | false = await ProductImage.find({
+                product_id: productId
+            }).then((result: IProductImage[] | null) => {
+                return result
+            }).catch((error: any) => {
+                logger.error(`*** ProductRepository findImageByProductId *** ERROR => ${error}`)
+                return false
+            })
+
+            return getProductImage
+
+        } catch (error: any) {
+            logger.error(`*** ProductRepository findImageByProductId *** catch ERROR => ${error}`)
+            return false
         }
     }
 

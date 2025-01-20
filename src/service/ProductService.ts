@@ -1,8 +1,8 @@
-import { IProduct, Product, ProductDto } from "../model/Product";
+import { IProduct, ProductDto } from "../model/Product";
+import { IProductImage, ProductImageDto } from '../model/ProductImages';
 import logger from "../utils/Logger";
 import { ApiResponseCode } from "../config/Constant";
 import ProductRepository from "../repository/ProductRepository";
-import { number } from "joi";
 const { CommonResponseCode, ProductResponseCode } = ApiResponseCode
 
 class ProductService {
@@ -193,6 +193,86 @@ class ProductService {
         } catch (error: any) {
             logger.error("*** ProductService getSingleProduct *** catch ERROR => " + error.stack)
             return false
+        }
+    }
+
+    public async createProductImages(productId: string, productImage: string[]): Promise<ProductImageDto[] | false> {
+        try {
+
+            let findProduct = await this.productRepository.findProductById(productId)
+
+            if (!findProduct) {
+                return ProductResponseCode.notFound
+            }
+
+            let createObj: IProductImage[] = productImage.map((url) => {
+                return {
+                    product_id: productId,
+                    url: url
+                }
+            }) 
+
+            let productImageCreate = await this.productRepository.createProductImage(createObj)
+
+            if (!productImageCreate) {
+                return false
+            }
+
+            let responseData: ProductImageDto[] = productImageCreate.map(ProductImage => {
+                return {
+                    productImageId: ProductImage._id,
+                    productId: ProductImage.product_id,
+                    url: ProductImage.url,
+                    createdAt: ProductImage.createdAt,
+                    updatedAt: ProductImage.updatedAt,
+                }
+            }) 
+
+            return responseData
+
+        } catch (error: any) {
+            logger.error("*** ProductService createProductImage *** catch ERROR => " + error.stack)
+            return false
+        }
+    }
+
+    public async deleteProductImage(productImageId: string[]): Promise<boolean> {
+        try {
+
+            let deleteProductImage = await this.productRepository.deleteProductImage(productImageId)
+            return deleteProductImage
+
+        } catch (error: any) {
+            logger.error("*** ProductService deleteProductImage *** catch ERROR => " + error.stack)
+            return false
+        }
+    }
+
+    public async getProductImagesByProduct(productId: string): Promise<ProductImageDto[] | false> {
+        try {
+
+            let findProductImages = await this.productRepository.findImageByProductId(productId)
+
+            if (!findProductImages) {
+                return false
+            }
+
+            let responseData: ProductImageDto[] = findProductImages.map(ProductImage => {
+                return {
+                    productImageId: ProductImage._id,
+                    productId: ProductImage.product_id,
+                    url: ProductImage.url,
+                    createdAt: ProductImage.createdAt,
+                    updatedAt: ProductImage.updatedAt,
+                }
+            }) 
+
+            return responseData
+            
+        } catch (error: any) {
+            logger.error("*** ProductService getProductImagesByProduct *** catch ERROR => " + error.stack)
+            return false
+            
         }
     }
 

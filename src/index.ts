@@ -3,6 +3,7 @@ import helmet from 'helmet'
 import userRoutes from './route/UserRoutes'
 import categoryRoutes from './route/CategoryRoutes'
 import productRoutes from './route/ProductRoutes'
+import cartRoutes from './route/CartRoutes'
 import bodyParser from 'body-parser'
 import logger from './utils/Logger'
 import MongoConnection from './config/Mongo'
@@ -31,6 +32,7 @@ app.use(function (req, res, next) {
 app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/category', categoryRoutes)
 app.use('/api/v1/product', productRoutes)
+app.use('/api/v1/cart', cartRoutes)
 
 app.listen(PORT, () => {
     logger.info(`Server is running on  http://localhost:${PORT}`)

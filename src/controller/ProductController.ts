@@ -92,6 +92,56 @@ class Product {
             res.status(500).json(CommonResponseCode.serverError)
         }
     }
+
+    createImages = async (req: Request, res: Response) => {
+        try {
+
+            let createProductImages = await this.ProductService.createProductImages(req.body.productId, req.body.productImageUrls)
+            
+            if (!createProductImages) {
+                res.status(200).json({ status: false, message: "Failed to create Product images" });
+            }
+            res.status(201).json({ status: true, statusCode: CommonResponseCode.success, data: createProductImages });
+            
+        } catch (error: any) {
+            logger.error("*** ProductController createImages *** catch ERROR => " + error.stack)
+            res.status(500).json(CommonResponseCode.serverError)
+            
+        }
+    }
+
+    deleteImages = async (req: Request, res: Response) => {
+        try {
+
+            let deleteProductImages = await this.ProductService.deleteProductImage(req.body.productImageIds)
+
+            if (!deleteProductImages) {
+                res.status(200).json(ProductResponseCode.failedToDelete)
+            }
+            res.status(200).json({ status: true, statusCode: CommonResponseCode.success })
+            
+        } catch (error: any) {
+            logger.error("*** ProductController deleteImages *** catch ERROR => " + error.stack)
+            res.status(500).json(CommonResponseCode.serverError)
+            
+        }
+    }
+
+    getImagesByProduct = async (req: Request, res: Response) => {
+        try {
+
+            let getProductImages = await this.ProductService.getProductImagesByProduct(req.body.productId)
+
+            if (!getProductImages || (Array.isArray(getProductImages) && getProductImages.length == 0)) {
+                res.status(200).json(ProductResponseCode.notFound)
+            }
+            res.status(200).json({ status: true, statusCode: CommonResponseCode.success, data: getProductImages })
+            
+        } catch (error: any) {
+            logger.error("*** ProductController getImagesByProduct *** catch ERROR => " + error.stack)
+            res.status(500).json(CommonResponseCode.serverError)
+        }
+    }
 }
 
 export default Product;

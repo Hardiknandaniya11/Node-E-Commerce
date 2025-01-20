@@ -15,8 +15,8 @@ export const USER_TYPE = {
 };
 
 export const USER_STATUS = {
-    active: 1,
-    inactive: 2
+    verifies: 1,
+    notVerified: 2
 };
 
 export const ApiResponseCode: any = {
@@ -108,6 +108,18 @@ export const ApiResponseCode: any = {
       status: false,
       statusCode: 1204,
       message: "failed to update Product"
+    }
+  },
+  CartResponseCode: {
+    notFound: {
+      status: false,
+      statusCode: 1301,
+      message: "No Product in Cart",
+    },
+    failedToUpdate: {
+      status: false,
+      statusCode: 1302,
+      message: "failed to update Cart"
     }
   }
 };
